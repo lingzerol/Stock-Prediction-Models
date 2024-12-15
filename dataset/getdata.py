@@ -3,6 +3,7 @@ import time
 import datetime
 import os
 import argparse
+import tqdm
 
 def get_akshare_stock_codes():
     stock_sector_detail_df = ak.stock_info_a_code_name()
@@ -13,14 +14,14 @@ def get_akshare_stock_codes():
 
 def download_akshare_stock_histories(codes: list, granularity:str, save_path: str):
     os.makedirs(save_path, exist_ok=True)
-    if datetime.datetime.today().weekday >= 5:
+    if granularity != "daily" and datetime.datetime.today().weekday() >= 5:
         print("today is not weekday")
         return
     now = datetime.datetime.now()
     date_str = now.strftime("%Y%m%d")
     start_date = now.strftime("%Y-%m-%d") + " 09:30:00"
     end_date = now.strftime("%Y-%m-%d") + "  15:00:00"
-    for code in codes:
+    for code in tqdm.tqdm(codes):
         for _ in range(3):
             try:
                 os.makedirs(os.path.join(save_path, code), exist_ok=True)
@@ -34,10 +35,11 @@ def download_akshare_stock_histories(codes: list, granularity:str, save_path: st
                     columns = ["Time", "Open", "Close", "Hight", "Low", "Volumn", "Transaction_Volume", "Average"]
                     df.columns = columns
                     df.to_csv(os.path.join(save_path, code, f"{code}-{date_str}.csv"), index=False)
-                time.sleep(1)
+                time.sleep(0.1)
                 break
             except Exception as e:
                 print(e)
+            time.sleep(0.1)
 
 def main(args):
     if args.stock_type == "akshare":
