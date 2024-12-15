@@ -20,7 +20,7 @@ def download_akshare_stock_histories(codes: list, granularity:str, save_path: st
     now = datetime.datetime.now()
     date_str = now.strftime("%Y%m%d")
     start_date = now.strftime("%Y-%m-%d") + " 09:30:00"
-    end_date = now.strftime("%Y-%m-%d") + "  15:00:00"
+    end_date = now.strftime("%Y-%m-%d") + " 15:00:00"
     for code in tqdm.tqdm(codes):
         for _ in range(3):
             try:
